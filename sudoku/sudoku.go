@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"log"
 	"strings"
 )
 
@@ -44,18 +45,23 @@ func (ss *sudokuSolve) SetTableWithReader(r io.Reader) {
 		b.Write(bs[:n])
 	}
 
-	str := strings.ReplaceAll(b.String(), "\n", "")
-	ss.bytesToTable([]byte(str))
+	ss.bytesToTable(b.Bytes())
 }
 
 func (ss *sudokuSolve) bytesToTable(b []byte) {
-	if len(b) != unit*unit {
-		panic("string length is not 81")
+	index := 0
+
+	for _, v := range b {
+		if v == ss.spaceChar || (v >= byte('0') && v <= byte('9')) {
+			ss.table[index/unit][index%unit] = v
+			index++
+		}
 	}
 
-	for index, v := range b {
-		ss.table[index/9][index%9] = v
+	if index != unit*unit {
+		log.Panicf("string length is %v, not %v", index, unit*unit)
 	}
+
 }
 
 func (ss *sudokuSolve) Solve() bool {
