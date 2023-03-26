@@ -71,7 +71,7 @@ func (ss *sudokuSolve) Solve() bool {
 						return true
 					}
 
-					ss.table[i][j] = '.'
+					ss.table[i][j] = ss.spaceChar
 				}
 			}
 			return false
